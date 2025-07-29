@@ -58,7 +58,7 @@ Clone this repo:
 bash
 Copy
 Edit
-git clone https://github.com/YOUR_USERNAME/ws2812b-wifi-controller.git
+git clone (https://github.com/afshadka/-WS2812B-4x4-LED-Matrix-Controller-with-ESP82666)
 Open the folder in VS Code
 
 Connect your NodeMCU
