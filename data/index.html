@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>LED Controller</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      text-align: center;
+      background: #111;
+      color: white;
+    }
+    h1 { color: #0ff; }
+    .btn {
+      background: #0ff;
+      color: #111;
+      border: none;
+      padding: 10px 20px;
+      margin: 10px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    .slider {
+      width: 200px;
+    }
+    input[type=file] {
+      margin: 10px auto;
+    }
+  </style>
+</head>
+<body>
+  <h1>ESP8266 LED Controller</h1>
+
+  <label for="pattern">Select Animation:</label>
+  <select id="pattern" onchange="setPattern()">
+    <!-- Will dynamically generate options -->
+  </select>
+  <br>
+
+  <label for="speed">Speed Delay (ms):</label>
+  <input class="slider" type="range" min="10" max="500" value="100" id="speed" onchange="setSpeed()">
+  <span id="speedVal">100</span>
+  <br><br>
+
+  <input type="file" id="file" />
+  <button class="btn" onclick="uploadFile()">Upload Animation</button>
+
+  <script>
+    const numPatterns = 30;
+    const select = document.getElementById("pattern");
+    const speedSlider = document.getElementById("speed");
+    const speedVal = document.getElementById("speedVal");
+
+    // Populate animation options
+    for (let i = 0; i < numPatterns; i++) {
+      let opt = document.createElement("option");
+      opt.value = i;
+      opt.innerHTML = `Pattern ${i}`;
+      select.appendChild(opt);
+    }
+
+    function setPattern() {
+      fetch(`/set?pattern=${select.value}&speed=${speedSlider.value}`);
+    }
+
+    function setSpeed() {
+      speedVal.innerText = speedSlider.value;
+      fetch(`/set?pattern=${select.value}&speed=${speedSlider.value}`);
+    }
+
+    function uploadFile() {
+      const fileInput = document.getElementById("file");
+      if (!fileInput.files.length) {
+        alert("Please select a file to upload.");
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append("file", fileInput.files[0]);
+
+      fetch("/upload", {
+        method: "POST",
+        body: fileInput.files[0]
+      }).then(() => {
+        alert("File uploaded successfully!");
+      }).catch(() => {
+        alert("Upload failed.");
+      });
+    }
+  </script>
+</body>
+</html>
